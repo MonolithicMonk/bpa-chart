@@ -1,0 +1,12 @@
+{{- if (.Values.keycloak.enabled) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "bpa.fullname" . }}-micronaut
+  labels:
+    {{- include "bpa.labels" . | nindent 4 }}
+data:
+  SERVER_HOST: {{ .Values.micronaut.server.host | quote }}
+  SERVICE_NAME: {{ .Values.micronaut.application.name | quote }}
+  SERVER_PORT: {{ .Values.micronaut.server.port | quote }}
+{{- end -}}

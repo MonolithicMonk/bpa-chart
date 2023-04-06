@@ -1,0 +1,673 @@
+# Default values for helm-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  # -- Hostname to be used for default hostpaths in ingress, prefixed with the charts name
+  nameOverride: ""
+  # -- Hostname prefix to be used for default hostpaths in ingress
+  fullnameOverride: ""
+
+  # -- Domain suffix to be used for default hostpaths in ingress
+  ingressSuffix: .bpa
+
+  persistence:
+    # -- Name of existing secret to use for PostgreSQL passwords
+    existingSecret: false
+
+  # -- The used ledger. Will be used for default values. Any of: idu, bcovrin-test
+  ledger: bcovrin-test
+
+bpa:
+  image:
+    repository: cloud.canister.io:5000/dgateled/business-partner-agent
+    pullPolicy: IfNotPresent
+    # --  Overrides the image tag whose default is the chart appVersion.
+    tag: 0.0.90
+
+  serviceAccount:
+    # -- Specifies whether a service account should be created
+    create: true
+    # -- Annotations to add to the service account
+    annotations: {}
+    # -- The name of the service account to use. If not set and create is true, a name is generated using the fullname template
+    name: ""
+  
+  name: 
+
+  acapy:
+    url: https://0x57d9b4b279bc66d9ba504223dff331ee54243ba0.diode.link
+    apiKey: uJDEvWc5mQvE8RAusi2nXgEznmtno8d0kQWGVP5ULXNM4GOgy1dY7Zk0Aivd0s7tCHYWV6KflpTeKtcE6naa8pP1fEOCUc8bypGsIqBJ1VHnf4Ox4Gh4iybkOaFQM2gJkt9Fa9qkmyvFiaUyK6JR8yG2sCIimI3dwiUDzJA4xuDlHWLlOvdQ27UnUOuHPHNPFTVQKi1z64R56Grn0ke5ET8eHXEsMyFZo0BhPcyptdTqGhJPXRNVvLiPI9xLXdof
+    bearerToken: testTokenNotNeededForThisDockerImageVersion
+    endpoint: https://0x4973edd71a66cde9f3821ceeea456e2daf90689d.diode.link
+  
+  db:
+    username: newuser
+    password: newpassword
+    host: postgresql.default.svc.cluster.local
+    port: 5432
+    database: bpa_20230331230252
+
+  config:
+    # -- Override name shown in the frontend (may contain whitespaces and so on). Default: Helm release name, capitalized
+    nameOverride: ""
+
+    # -- Override title shown in the browser tab. Default: Helm release name, capitalized (or NameOverride if given)
+    titleOverride: ""
+
+    jmx:
+      enabled: false
+      port: 9999
+
+    pg:
+      # -- Sets the database schema the bpa backend should use, defaults to 'publlic' if empty
+      schema: ""
+    security:
+      # -- Enable login page and endpoint security
+      enabled: false
+      # -- Enable strict strict security headers
+      strict: true
+      # -- Comma separated list of csp host sources, used to set allowed origins
+      allowedHosts: {}
+    bootstrap:
+      # -- The name of the default admin user
+      username: admin
+      # -- Default password
+      password: changeme
+    ledger:
+      browserUrlOverride: ""
+    # -- The scheme that is used to register the profile endpoint on the ledger
+    scheme: https
+    web:
+      only: false
+    creddef:
+      revocationRegistrySize: 3000
+    imprint:
+      enabled: true
+      urlOverride: ""
+    privacyPolicy:
+      enabled: true
+      urlOverride: ""
+    i18n:
+      locale: en
+      fallbackLocale: en
+    # -- Frontend runtime variables which are injected into the frontend code on container startup (only if at least one runtime variable value has been set). These function e.g. as feature toggles for specific frontend changes. NOTE: The container startup time is impacted by using these.
+    frontend:
+      # -- Setting this to true keeps the sidebar in the frontend closed when loading the page in a browser
+      closeSidebar: true
+      # -- Setting this to true hides the sidebar burger button in the frontend. In combination with 'closeSidebar' the sidebar is completely gone.
+      hideSidebarButton: false
+    # -- log4j2 configuration file which must be in the classpath. Use log4j2.yml for non-json. Will be ignored if logging is set and has values.
+    logConfigurationFile: log4j2.xml
+    # log4j2-prod.xml
+    # -- log configuration overwrite, if set logConfigurationFile will be ignored. Takes an array of logger names and levels. See also log4j2.
+    logging:
+    #  - name: org.hyperledger.bpa
+    #    level: warn
+    # -- Mailjet service integration, requires a developer account with verified sender email and generated api keys
+    mail:
+      # -- Mail service verified sender email address
+      username: ""
+      # -- Mail service api key
+      apiKey: ""
+      # -- Mail service api secret
+      apiSecret: ""
+
+  imagePullSecrets:
+    - name: registry-pullsecrets
+
+  podAnnotations: {}
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  service:
+    clusterIP: 10.43.185.146
+    type: ClusterIP
+    port: 8085
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    # Uncomment this to define your own hosts and override global.ingressSuffix
+    # hosts:
+    #     host:
+    #     paths: ['/']
+    tls: []
+    #  - secretName: my-bpa-tls
+    #    hosts:
+    #      - my-bpa.local
+
+  openshift:
+    route:
+      enabled: false
+      path: "/"
+      targetPort: http
+      timeout: 30s
+      tls:
+        enabled: true
+        insecureEdgeTerminationPolicy: None
+        termination: edge
+      wildcardPolicy: None
+
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits:
+      cpu: "2"
+      memory: 384Mi
+    requests:
+      cpu: "0.2"
+      memory: 384Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+micronaut:
+  server: 
+    host: 0.0.0.0
+    port: 9011
+  application:
+    name: dgateman537372726
+
+consul:
+  enabled: true
+  host: https://0x4d13ba37c54f6fc58747593a28a11ff66ea31c2c.diode.link
+  # consul-headless.default.svc.cluster.local
+  metadata: 0xca1a3af17d83fe786724dd4ccacf0c455a1fc1cc.diode.link
+  port: 8500
+  secure: false
+  ipAddr: localhost
+  preferIpAddress: true
+
+keycloak:
+  enabled: true
+
+  clientId: YJ0SZDP8aH6niUjOmIjRMjJZK8yaRjmN
+  clientSecret: VlytbAlErk8Wj8mtvH0qMFmpeL9L5ExxPl-YNTbe8DjVeRzer2ND4KRlMtXWa0nO
+
+  config:
+    rolesName: https://dgateman.com/roles
+    nameKey: sub
+    # redirect uri after login with password and username
+    redirectUri: https://0xca1a3af17d83fe786724dd4ccacf0c455a1fc1cc.diode.link/
+    scopes: openid,picture,role,roles,profile
+    issuer: https://dev-qlpzbp9o.us.auth0.com
+    endsessionUrl: https://dev-qlpzbp9o.us.auth0.com/oauth/revoke
+    # redirect uri to process oauth code flow
+    bpaRedirectUrl: https://0x342af7cd007ed22ecd098942d008dc00f3c5ebcd.diode.link/oauth/callback/auth0
+    bpaAuthenticationType: cookie
+    bpaKeycloakAuthMethod: client_secret_post
+    bpaKeycloakAuthorizationUrl: https://dev-qlpzbp9o.us.auth0.com/authorize
+    bpaKeycloakConfigPath: /.well-known/openid-configuration
+    bpaKeycloakCookieDomain: 0xca1a3af17d83fe786724dd4ccacf0c455a1fc1cc.diode.link
+    bpaKeycloakCookieEnabled: true
+    bpaKeycloakCookieHttpOnly: true
+    bpaKeycloakCookieMaxAge: 12h
+    bpaKeycloakCookieName: dgateman.com/user/jwt
+    bpaKeycloakCookieSameSite: Strict
+    bpaKeycloakCookieSecure: true
+    bpaKeycloakEndsessionRedirectUri: /logout
+    bpaKeycloakGrantType: authorization_code
+    bpaKeycloakJwksUri: https://dev-qlpzbp9o.us.auth0.com/.well-known/jwks.json
+    bpaKeycloakOpenidResponseMode: query
+    bpaKeycloakOpenidResponseType: code
+    bpaKeycloakRedirectUnauthorized: /oauth/login
+    bpaKeycloakRolesSeparator: ","
+    bpaKeycloakTokenUrl: https://dev-qlpzbp9o.us.auth0.com/oauth/token
+    bpaKeycloakUserInfo: https://dev-qlpzbp9o.us.auth0.com/userinfo
+    bpaKeycloakVcauthnPresReqConfId: employee_login_test_indy
+
+schemas:
+  enabled: true
+  config: {}
+#    bank-account:
+#      id: "M6Mbe3qx7vB4wpZF4sBRjt:2:bank_account:1.0"
+#      label: "Bank Account"
+#      defaultAttributeName: "iban"
+#      restrictions:
+#        - issuerDid: "${bpa.did.prefix}M6Mbe3qx7vB4wpZF4sBRjt"
+#          label: "Demo Bank"
+#    commercial-register:
+#      id: "5mwQSWnRePrZ3oF67C4KqD:2:commercialregister:1.0"
+#      label: "Commercial Register"
+#      defaultAttributeName: "companyName"
+#      restrictions:
+#        - issuerDid: "${bpa.did.prefix}5mwQSWnRePrZ3oF67C4KqD"
+#          label: "Commercial Register"
+
+ux:
+  # -- The ux preset configuration.
+  # -- Allowed values: custom, default
+  # -- When using preset=default, no ux configmaps will be created; app runs with default configuration
+  # -- When using preset=custom, you need to populate the config object.
+  preset: default
+  config: {}
+#    buttons:
+#      primary:
+#        text: false
+#        outlined: false
+#      secondary:
+#        text: true
+#        outlined: false
+#    theme:
+#      dark: false
+#      themes:
+#        light:
+#          primary: '#4A148C'
+#          secondary: '#424242'
+#          accent: '#82B1FF'
+#          error: '#FF5252'
+#          info: '#2196F3'
+#          success: '#4CAF50'
+#          warning: '#FFC107'
+#          bgLight: "#FAFAFA"
+#          bgLight2: "#ECECEC"
+#          font: "#313132"
+#          anchor: "#1A5A96"
+#          anchorHover: "#3B99FC"
+#          icons: "#000000"
+#    favicon:
+#      href: "<url to fav icon>"
+#    navigation:
+#      avatar:
+#        agent:
+#          enabled: true
+#          default: true
+#          src: "<url to logo image - need enabled=true default=false>"
+#          showName: true
+#      settings:
+#        location: "top"
+#      about:
+#        enabled: true
+#      logout:
+#        enabled: false
+#    header:
+#      logout:
+#        enabled: true
+
+
+acapy:
+  enabled: true
+  image:
+    repository: bcgovimages/aries-cloudagent
+    pullPolicy: IfNotPresent
+    # --  Overrides the image tag whose default is the chart appVersion.
+    tag: py36-1.16-1_0.7.4
+
+
+  endPointUrl: https://0x4973edd71a66cde9f3821ceeea456e2daf90689d.diode.link
+
+  inbound: 
+    module: http
+    host: 0.0.0.0
+    port: 
+
+  admin:
+    enabled: true
+    # Specify the host and port on which to run the
+    # administrative server. If not provided, no admin
+    # server is made available.
+    # Readiness and liveness checks will fail if not enabled
+    # Example <host> <port> example.com 8031
+    host: 0.0.0.0 8031
+    # 0xfe02934eb67cc36bd4bd6433e7bc7fa8cff06d70.diode.link
+    # bpa-acapy.default.svc.cluster.local 8031
+    # Enable or disable admin url api key
+    apiKey:
+      enabled: true
+      # -- Please change: key used to protect acapy's admin endpoint
+      adminURLApiKey: uJDEvWc5mQvE8RAusi2nXgEznmtno8d0kQWGVP5ULXNM4GOgy1dY7Zk0Aivd0s7tCHYWV6KflpTeKtcE6naa8pP1fEOCUc8bypGsIqBJ1VHnf4Ox4Gh4iybkOaFQM2gJkt9Fa9qkmyvFiaUyK6JR8yG2sCIimI3dwiUDzJA4xuDlHWLlOvdQ27UnUOuHPHNPFTVQKi1z64R56Grn0ke5ET8eHXEsMyFZo0BhPcyptdTqGhJPXRNVvLiPI9xLXdof
+  
+  db:
+    username: newuser
+    password: newpassword
+    host: postgresql.default.svc.cluster.local
+    port: 5432
+    database: bpa_acapy_database
+
+  # -- Please change: the agent seed, 32 characters e.g. a UUID without the dashes. If the ledger is bcovrin-test the seed will be registered automatically. In all other cases this needs to happen manually beforehand.
+  agentSeed: ttVNMSrC4LLgAZlkTwMKOTTl6rxvGDxy
+  # -- Please change: Wallet encryption key, be aware that if this value is changed later aca-py needs to be restarted with the '--wallet-rekey' param which is not mapped
+  walletKey: HQHsVasRrxXxbmUAeY4WzEpQLwS7pEnlrHFHBh2X0kDF0M1D1L9yHbAi2B0cxRYtaUgOmxGgRJ0oCit9BSIR697rC00VOn1wwhC2P2JL1sexL8c6rV01ZqOZqF6K4OYkwoOQsYDB7Ld7XqMYxL4CluulnDOHgW0ca4KaytuX5IrJJ3qJ3UcKJFYZF8ypghwC8Tm4lmYhz1rC7GwhS2Tt9H4x5fYJ5wVLeGO8Laf67j0Ig1ODq5ifwOnm7dbfAG8L
+  
+  # Send webhooks containing internal state changes to the
+  # specified URL. Optional API key to be passed in the
+  # request body can be appended using a hash separator
+  # [#] <url#api_key>
+  webhookUrl: https://0xca1a3af17d83fe786724dd4ccacf0c455a1fc1cc.diode.link/log
+
+  # After startup, generate and print a new out-of-band
+  # connection invitation URL. Default: false.
+  invite:
+
+  # Specify the label of the generated invitation
+  inviteLabel: ""
+
+  # Generate tracing events.  Default: false
+  trace:
+
+  # Target for trace events ("log", "message", or http endpoint)
+  traceTarget: ""
+
+  # Tag to be included when logging events
+  traceTag: ""
+
+  # Label (agent name) used logging events
+  traceLabel: ""
+
+  # Specifies the image url for this agent.
+  imageUrl: ""
+
+  # Specifies a new master key value to which to rotate
+  # and to open the wallet next time
+  walletRekey: ""
+
+  # If this parameter is set and an agent already has a
+  # public DID, and the '--seed' parameter specifies a new
+  # DID, the agent will use the new DID in place of the
+  # existing DID. Default: false.
+  replacePublic:
+
+  # If an existing wallet exists with the same name,
+  # remove and recreate it during provisioning.  Default: false
+  recreateWallet:
+
+  labelOverride: ""
+
+  readOnlyMode: false
+
+  staticArgs:
+    autoAcceptInvites: false
+    autoAcceptRequests: false
+    autoRespondMessages: false
+    autoRespondCredentialProposal: false
+    autoRespondCredentialOffer: false
+    autoRespondCredentialRequest: false
+    autoRespondPresentationProposal: true
+    autoRespondPresentationRequest: false
+    autoStoreCredential: true
+    autoVerifyPresentation: false
+    autoPingConnection: true
+    autoProvision: true
+    autoDiscloseFeatures: true
+    notifyRevocation: true
+    monitorRevocationNotification: true
+    monitorPing: true
+    emitNewDidcommPrefix: true
+    emitNewDidcommMimeType: true
+    enableUndeliveredQueue: true
+    exchUseUnencryptedTags: true
+    preserveExchangeRecords: false
+    publicInvites: true
+    # -- indy or askar
+    walletType: askar
+    logLevel: debug
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+  podAnnotations: {}
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext:
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    runAsUser: 1001
+
+  service:
+    type: ClusterIP
+    clusterIP: 10.43.235.39
+    adminPort: 8031
+    httpPort: 8030
+
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+
+    # Uncomment this to define your own hosts and override global.ingressSuffix
+    # hosts:
+    #     host:
+    #     paths: ['/']
+    tls: []
+    #  - secretName: my-acapy-tls
+    #    hosts:
+    #      - my-acapy.local
+    className: ""
+
+  openshift:
+    route:
+      enabled: false
+      path: "/"
+      targetPort: http
+      timeout: 30s
+      tls:
+        enabled: true
+        insecureEdgeTerminationPolicy: None
+        termination: edge
+      wildcardPolicy: None
+
+  tails:
+    # -- Set to true to enable revocation (external tails server required)
+    enabled: false
+
+    # -- Override the otherwise ledger-specifically generated base URL of the external tails server
+    baseUrlOverride: ""
+
+    # -- Override the otherwise ledger-specifically generated upload URL of the external tails server
+    uploadUrlOverride: ""
+
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+diode:
+  enabled: true
+  replicaCount: 1
+
+  image:
+    repository: cloud.canister.io:5000/dgateled/diode-image-bullseye
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "0.1.7"
+
+  imagePullSecrets:
+    - name: registry-pullsecrets
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: false
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  podAnnotations: {}
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  service:
+    # Likely true if bind and false if publish
+    enabled: false
+    type: ClusterIP
+    clusterIP:
+      ip:  
+      ports: 
+        - port: 8080
+          targetPort: 8080
+          protocol: TCP
+          name: http
+        - port: 443
+          targetPort: 443
+          protocol: TCP
+          name: https
+    loadBalancer: 
+      ip: 
+      ports: 
+        - port: 
+          targetPort: 
+          protocol: 
+          name: 
+    nodePort: 
+      ip: 
+      ports: 
+        - port: 
+          targetPort: 
+          protocol: 
+          name: 
+
+  logging:
+    displayAddress:
+      enabled: true
+    displayProcess:
+      enabled: true
+
+  # base64 encoded diode private keys for dbpath
+  # Add up to 5 keys
+  base64PrivateKey: 
+    # Admin
+    one: 09T5rBACDmxhc3RfdXBkYXRlX2F0BGQupAIHcHJpdmF0Zd8BLS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IUUNBUUVFSUxNOHhlbGFNMEpDR0pUUmpCa3dOSGdRSUhSMlhXMHgzSXIwSlQxR2JRYVlvQWNHQlN1QkJBQUsKb1VRRFFnQUVyelBIdEJrait0UXpoV2pPOE9TWHNxdGJ5SDYyNU5ZSlJmWTFaOU5LMHFQWlNaMk0wZDdSTGRHQgpqcXJHYVhGRXE0b3B1WG9TUlZoWXNMZCs0czEyYXc9PQotLS0tLUVORCBFQyBQUklWQVRFIEtFWS0tLS0tCg==
+    # Endpoint
+    two: 09T5rBACDmxhc3RfdXBkYXRlX2F0BGQuprIHcHJpdmF0Zd8BLS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IUUNBUUVFSURhNmFMOFBEa2QrOFRsaHc0LzhRZ2dYVkFxSlBmRXg4MUtCK2d3OHN1Y0hvQWNHQlN1QkJBQUsKb1VRRFFnQUUvL0l3VkRlbHNWTmtPeXhUZU1Ta3BEUURBck9CbjQvL1h1Ri8rSXBXY2Z6eGd3ZEVka0puVnVFYQpFQjhTS0lHTnB2em0rZlU2YUxNM2kySlYwVGRUaXc9PQotLS0tLUVORCBFQyBQUklWQVRFIEtFWS0tLS0tCg==
+    three: 09T5rBAEDmxhc3RfdXBkYXRlX2F0BGQpilkHcHJpdmF0Zd8BLS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IUUNBUUVFSUNmS1FWUDJWTE5LOFFnT0lRUjM3c0tuMkNVK3BkaVFUendiME0yTjllMHlvQWNHQlN1QkJBQUsKb1VRRFFnQUVhOXk0cmNMRUMvZFBiSFdLbm95TTJPYmllU2RvUWN3VnBDTll0NjhhSGxib2U1NktUS1ZVWFlHeAorL0R0TmdZMUsvMzB0VXBEY2hiZjVqaHl3Tm5UcFE9PQotLS0tLUVORCBFQyBQUklWQVRFIEtFWS0tLS0tCgVsdmJuMwNPzycFbHZiaDMgAAAk/jiRC80EbwCTPTgH8AJMnno/+/lkjO14ratu7UA=
+    four:
+    five:
+
+  # Use a list of options and command properties to construct a diode cli command
+  # The example below will generate these commands: 
+  #  diode   -dbpath /go/diode/BASE64PRIVATEKEY_ONE  publish -public 5445:5455 -public 5666:5666 >/dev/null 2>&1 &
+  #  diode   -bind 4005:0xfbd2428cedb9c69758eb809e7ba7efbda50bee5a:4005 -dbpath /go/diode/BASE64PRIVATEKEY_TWO  publish >/dev/null 2>&1 &
+  #  diode   -dbpath /go/diode/BASE64PRIVATEKEY_THREE -bind 5566:0xfbd2428cedb9c69758eb809e7ba7efbda50bee5a:5566  publish >/dev/null 2>&1 &
+  # To use a specific private key for your dbpath eg the first one, 
+  # reference it like so: base64PrivateKey.one
+  cli:
+    - options:
+        - key: dbpath
+          value: base64PrivateKey.one
+      command:
+        publish:
+            # Admin
+          - key: public
+            value: "10.43.235.39:8031:80"
+    - options:
+        - key: dbpath
+          value: base64PrivateKey.two
+      command:
+        publish:
+            # Endpoint
+          - key: public
+            value: "10.43.235.39:8030:80"
+    - options:
+        - key: dbpath
+          value: base64PrivateKey.three
+      command:
+        publish:
+            # Application
+          - key: public
+            value: "10.43.185.146:8085:80"
+
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  storage:
+    keepPvc: true
+    # Size of storage. Default: 20Mi
+    size: "20Mi" 

@@ -1,0 +1,53 @@
+{{- $agentName := include "business.partner.agent.name" . -}}
+{{- $browserTitle := include "business.partner.browser.title" . -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "bpa.fullname" . }}
+  labels:
+    {{- include "bpa.labels" . | nindent 4 }}
+data:
+  AGENT_NAME: {{ $agentName | quote }}
+  ACAPY_URL: {{ .Values.bpa.acapy.url | quote }}
+  ACAPY_API_KEY: {{ .Values.bpa.acapy.apiKey | quote }}
+  TENANT_TOKEN: {{ .Values.bpa.acapy.bearerToken | quote }}
+  ACAPY_ENDPOINT: {{ .Values.bpa.acapy.endpoint | quote }}
+{{- if (default false .Values.bpa.config.pg.schema) }}
+  BPA_PG_SCHEMA: {{ .Values.bpa.config.pg.schema | quote }}
+{{- end }}  
+  POSTGRESQL_USER: {{ .Values.bpa.db.username | quote }}
+  BPA_SECURITY_ENABLED: {{ .Values.bpa.config.security.enabled | quote }}
+  BPA_LEDGER_BROWSER: {{ include "bpa.ledgerBrowser" . | quote }}
+  BPA_HOST: {{ .Values.micronaut.server.host | quote }}
+  BPA_SCHEME: {{ .Values.bpa.config.scheme | quote }}
+  BPA_WEB_MODE: {{ .Values.bpa.config.web.only | quote }}
+  BPA_BOOTSTRAP_UN: {{ .Values.bpa.config.bootstrap.username | quote }}
+  BPA_BOOTSTRAP_PW: {{ .Values.bpa.config.bootstrap.password | quote }}
+  BPA_CREDDEF_REVOCATION_REGISTRY_SIZE: {{ .Values.bpa.config.creddef.revocationRegistrySize | quote }}
+  BPA_TITLE: {{ $browserTitle | quote }}
+  BPA_I18N_LOCALE: {{ .Values.bpa.config.i18n.locale | quote }}
+  BPA_I18N_FALLBACK_LOCALE: {{ .Values.bpa.config.i18n.fallbackLocale | quote }}
+{{- if .Values.bpa.config.imprint.enabled }}
+  BPA_IMPRINT_URL: {{ .Values.bpa.config.imprint.urlOverride | default (printf "https://bpa%s/" .Values.global.ingressSuffix) | quote }}
+{{- end }}   
+{{- if .Values.bpa.config.privacyPolicy.enabled }}
+  BPA_PRIVACY_POLICY_URL: {{ tpl .Values.bpa.config.privacyPolicy.urlOverride . | default (printf "https://bpa%s/privacyPolicy" .Values.global.ingressSuffix) | quote }}
+{{- end }}
+{{- if .Values.bpa.config.frontend.closeSidebar }}
+  SIDEBAR_CLOSE_ON_STARTUP: {{ .Values.bpa.config.frontend.closeSidebar | quote }}
+{{- end }}
+{{- if .Values.bpa.config.frontend.hideSidebarButton }}
+  SIDEBAR_HIDE_BURGER_BUTTON: {{ .Values.bpa.config.frontend.hideSidebarButton | quote }}
+{{- end }}
+{{- if and .Values.bpa.config.security.strict .Values.bpa.config.security.allowedHosts }}
+  BPA_ALLOWED_HOSTS: {{ .Values.bpa.config.security.allowedHosts | quote }}
+{{- end -}}
+{{- if .Values.bpa.config.mail.username }}
+  MAIL_USERNAME: {{ .Values.bpa.config.mail.username| quote }}
+{{- end }}
+{{- if .Values.bpa.config.mail.apiKey }}
+  MAILJET_API_KEY: {{ .Values.bpa.config.mail.apiKey | quote }}
+{{- end }}
+{{- if .Values.bpa.config.mail.apiSecret }}
+  MAILJET_API_SECRET: {{ .Values.bpa.config.mail.apiSecret | quote }}
+{{- end }}

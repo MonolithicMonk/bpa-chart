@@ -1,0 +1,16 @@
+{{- if (.Values.keycloak.enabled) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "bpa.fullname" . }}-consul
+  labels:
+    {{- include "bpa.labels" . | nindent 4 }}
+data:
+  CONSUL_REG_ENABLED: {{ .Values.consul.enabled | quote }}
+  CONSUL_HOST: {{ .Values.consul.host | quote }}
+  CONSUL_METADATA: {{ .Values.consul.metadata | quote }}
+  CONSUL_PORT: {{ .Values.consul.port | quote }}
+  CONSUL_SECURE: {{ .Values.consul.secure | quote }}
+  CONSUL_IP_ADDR: {{ .Values.consul.ipAddr | quote }}
+  CONSUL_PREFER_IP_ADDRESS: {{ .Values.consul.preferIpAddress | quote }}
+{{- end -}}

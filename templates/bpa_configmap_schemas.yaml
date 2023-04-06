@@ -1,0 +1,63 @@
+{{- if (.Values.schemas.enabled) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "bpa.fullname" . }}-schemas
+  labels:
+    {{- include "bpa.labels" . | nindent 4 }}
+data:
+  schemas.yml: |-
+    bpa:
+      schemas:
+{{- if .Values.schemas.config }}
+{{ toYaml .Values.schemas.config | indent 8 }}
+{{- else if eq .Values.global.ledger "idu" }}
+        bank-account:
+          ledgerId: "IDUnionTest"
+          defaultAttributeName: "iban"
+          id: "UmZ25DANwS6ngGWB4ye4tN:2:BankAccount:0.1"
+          label: "Bank Account"
+          restrictions:
+          - issuerDid: "${bpa.did.prefix}UmZ25DANwS6ngGWB4ye4tN"
+            label: "Demo Bank"
+        commercial-register:
+          ledgerId: "IDUnionTest"
+          defaultAttributeName: "companyName"
+          id: "3WDPV5zrNEWhAy9oRS2g8i:2:commercialregister:1.0"
+          label: "Commercial Register"
+          restrictions:
+          - issuerDid: "${bpa.did.prefix}R6WR6n7CQVDjvvmwofHK6S"
+            label: "Commercial Register"
+{{- else if eq .Values.global.ledger "bcovrin-test" }}
+        bank-account:
+          ledgerId: "bcovrinTest"
+          id: "F6dB7dMVHUQSC64qemnBi7:2:bank_account:1.0"
+          label: "Bank Account"
+          defaultAttributeName: "iban"
+          restrictions:
+            - issuerDid: "${bpa.did.prefix}F6dB7dMVHUQSC64qemnBi7"
+              label: "Demo Bank"
+        commercial-register:
+          ledgerId: "bcovrinTest"
+          id: "F6dB7dMVHUQSC64qemnBi7:2:commercialregister:1.0"
+          label: "Commercial Register"
+          defaultAttributeName: "companyName"
+          restrictions:
+            - issuerDid: "${bpa.did.prefix}F6dB7dMVHUQSC64qemnBi7"
+              label: "Commercial Register"
+{{- end -}}
+{{- if not .Values.schemas.config }}
+        permanent-resident:
+          id: "https://w3id.org/citizenship/v1"
+          type: "json_ld"
+          label: "Permanent Resident"
+          defaultAttributeName: "givenName"
+          ldType: "PermanentResident"
+          attributes:
+            - "givenName"
+            - "familyName"
+            - "gender"
+            - "birthCountry"
+            - "birthDate"
+{{- end -}}
+{{- end -}}

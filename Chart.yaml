@@ -1,0 +1,20 @@
+apiVersion: v2
+appVersion: "1.16.0"
+description: The BPA allows organizations to verify, hold, and issue verifiable credentials.
+home: https://github.com/
+
+name: bpa
+sources:
+- https://github.com/
+type: application
+version: 0.1.0
+
+dependencies:
+  - name: acapy
+    version: 0.1.0
+    repository: file://../acapy-chart/
+    condition: acapy.enabled
+  - name: diode
+    version: 0.1.0
+    repository: file://../diode-chart/
+    condition: diode.enabled

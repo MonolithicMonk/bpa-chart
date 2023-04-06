@@ -1,0 +1,15 @@
+{{- if eq (include "bpa.ux.override" .) "true" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "bpa.fullname" . }}-ux
+  labels:
+    {{- include "bpa.labels" . | nindent 4 }}
+data:
+  ux.yml: |-
+    bpa:
+      ux:
+{{- if eq .Values.ux.preset "custom" }}
+{{ toYaml .Values.ux.config | indent 8 }}
+{{- end -}}
+{{- end -}}

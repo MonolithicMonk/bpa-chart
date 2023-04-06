@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bpa.fullname" . }}
+  labels:
+    {{- include "bpa.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "bpa.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/bpa_configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/bpa_configmap_consul.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/bpa_configmap_micronaut.yaml") . | sha256sum }}
+        {{- if .Values.keycloak.enabled  }}
+        checksum/configKeycloak: {{ include (print $.Template.BasePath "/bpa_configmap_keycloak.yaml") . | sha256sum }}
+        {{- end }}   
+        {{- if .Values.schemas.enabled  }}
+        checksum/configSchemas: {{ include (print $.Template.BasePath "/bpa_configmap_schemas.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if .Values.ux.enabled  }}
+        checksum/configUx: {{ include (print $.Template.BasePath "/bpa_configmap_ux.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if (not .Values.global.persistence.existingSecret) }}
+        checksum/configDB: {{ include (print $.Template.BasePath "/db_secret.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if .Values.global.persistence.existingSecret }}
+        rollme: {{ randAlphaNum 5 | quote }}
+        {{- end }}
+    {{- with .Values.bpa.podAnnotations -}}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "bpa.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.bpa.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "bpa.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.bpa.podSecurityContext | nindent 8 }}
+      containers:
+        - name: bpa
+          securityContext:
+            {{- toYaml .Values.bpa.securityContext | nindent 12 }}
+          image: "{{ .Values.bpa.image.repository }}:{{ .Values.bpa.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.bpa.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.micronaut.server.port }}
+              protocol: TCP
+            {{ if .Values.bpa.config.jmx.enabled }}
+            - name: jmx
+              containerPort: {{ .Values.bpa.config.jmx.port }}
+              protocol: TCP
+            {{ end }}
+          readinessProbe:
+            httpGet:
+              path: /health/readiness
+              port: {{ .Values.micronaut.server.port }}
+            initialDelaySeconds: 45
+            periodSeconds: 10  
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.micronaut.server.port }}
+            initialDelaySeconds: 45
+            periodSeconds: 20   
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "bpa.fullname" . }}
+                  key: postgresql-password
+            {{- include "bpa.keycloak.secret.env.vars" . | nindent 12}}
+            - name: JAVA_OPTS
+              value: |
+                -Dbpa.pg.password=$(POSTGRES_PASSWORD)
+                -Dbpa.pg.url=jdbc:postgresql://{{ .Values.bpa.db.host }}:{{ .Values.bpa.db.port }}/{{ .Values.bpa.db.database }}
+                -Dbpa.pg.username={{ .Values.bpa.db.username }}
+                -Dmicronaut.config.files={{ include "bpa.config.files" . }}
+                -Dlog4j2.configurationFile={{ include "bpa.logFileName" . }}
+                {{ if .Values.bpa.config.jmx.enabled }}
+                -Dcom.sun.management.jmxremote.authenticate=false
+                -Dcom.sun.management.jmxremote.ssl=false
+                -Dcom.sun.management.jmxremote.local.only=false
+                -Dcom.sun.management.jmxremote.port={{ .Values.bpa.config.jmx.port }}
+                -Dcom.sun.management.jmxremote.rmi.port={{ .Values.bpa.config.jmx.port }}
+                -Djava.rmi.server.hostname=127.0.0.1
+                {{ end }}
+            {{- include "bpa.application.configmap.env.vars" . | nindent 10}}
+            {{- include "bpa.keycloak.configmap.env.vars" . | nindent 12}}
+            {{- include "bpa.consul.configmap.env.vars" . | nindent 12}}
+            {{- include "bpa.micronaut.configmap.env.vars" . | nindent 12}}
+            {{- include "bpa.volume.mounts" . | nindent 10}}
+            {{- include "bpa.volume.mounts.schemas" . | nindent 12}}
+            {{- include "bpa.volume.mounts.ux" . | nindent 12}}
+            {{- include "bpa.volume.mounts.logging" . | nindent 12}}
+          resources:
+            {{- toYaml .Values.bpa.resources | nindent 12 }}
+      {{- include "bpa.volumes" . | nindent 6}}
+      {{- include "bpa.volumes.schemas" . | nindent 8}}
+      {{- include "bpa.volumes.ux" . | nindent 8}}
+      {{- include "bpa.volumes.logging" . | nindent 8}}
+      {{- with .Values.bpa.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.bpa.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.bpa.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

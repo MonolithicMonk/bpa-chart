@@ -1,0 +1,336 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "bpa": {
+            "type": "object",
+            "properties": {
+                "affinity": {
+                    "type": "object"
+                },
+                "config": {
+                    "type": "object",
+                    "properties": {
+                        "bootstrap": {
+                            "type": "object",
+                            "description": "The administrator credentials.",
+                            "title": "Login Credentials",
+                            "properties": {
+                                "username": {
+                                    "type": "string",
+                                    "title": "Username",
+                                    "form": true
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "title": "Password",
+                                    "form": true
+                                }
+                            },
+                            "form": true
+                        },
+                        "nameOverride": {
+                            "type": "string"
+                        },
+                        "creddef": {
+                            "type": "object",
+                            "properties": {
+                                "revocationRegistrySize": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "i18n": {
+                            "type": "object",
+                            "properties": {
+                                "fallbackLocale": {
+                                    "type": "string"
+                                },
+                                "locale": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "imprint": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "description": "Check to show link to imprint page in frontend",
+                                    "title": "Show Imprint page?",
+                                    "form": true
+                                },
+                                "urlOverride": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "ledger": {
+                            "type": "object",
+                            "properties": {
+                                "browserUrlOverride": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "privacyPolicy": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "description": "If checked, show link to privacy policy page in frontend",
+                                    "title": "Show policy page?",
+                                    "form": true
+                                },
+                                "urlOverride": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "scheme": {
+                            "type": "string"
+                        },
+                        "security": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "title": {
+                            "type": "string"
+                        },
+                        "web": {
+                            "type": "object",
+                            "properties": {
+                                "only": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "logConfigurationFile": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "pullPolicy": {
+                            "type": "string"
+                        },
+                        "repository": {
+                            "type": "string"
+                        },
+                        "tag": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "imagePullSecrets": {
+                    "type": "array"
+                },
+                "ingress": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "tls": {
+                            "type": "array"
+                        }
+                    }
+                },
+                "nodeSelector": {
+                    "type": "object"
+                },
+                "openshift": {
+                    "type": "object",
+                    "properties": {
+                        "route": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "path": {
+                                    "type": "string"
+                                },
+                                "targetPort": {
+                                    "type": "string"
+                                },
+                                "timeout": {
+                                    "type": "string"
+                                },
+                                "tls": {
+                                    "type": "object",
+                                    "properties": {
+                                        "enabled": {
+                                            "type": "boolean"
+                                        },
+                                        "insecureEdgeTerminationPolicy": {
+                                            "type": "string"
+                                        },
+                                        "termination": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "wildcardPolicy": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "podAnnotations": {
+                    "type": "object"
+                },
+                "podSecurityContext": {
+                    "type": "object"
+                },
+                "resources": {
+                    "type": "object",
+                    "properties": {
+                        "requests": {
+                            "type": "object",
+                            "properties": {
+                                "cpu": {
+                                    "type": "string"
+                                },
+                                "memory": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "securityContext": {
+                    "type": "object"
+                },
+                "service": {
+                    "type": "object",
+                    "properties": {
+                        "port": {
+                            "type": "integer"
+                        },
+                        "type": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "serviceAccount": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object"
+                        },
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "tolerations": {
+                    "type": "array"
+                }
+            }
+        },
+        "global": {
+            "type": "object",
+            "properties": {
+                "fullnameOverride": {
+                    "type": "string"
+                },
+                "ingressSuffix": {
+                    "type": "string"
+                },
+                "ledger": {
+                    "type": "string",
+                    "enum": ["idu", "bcovrin-test"],
+                    "description": "The ledger to be configured",
+                    "title": "Ledger",
+                    "form": true
+                },
+                "nameOverride": {
+                    "type": "string"
+                },
+                "persistence": {
+                    "type": "object",
+                    "properties": {
+                        "existingSecret": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+
+            }
+        },
+        "keycloak": {
+            "type": "object",
+            "properties": {
+                "clientId": {
+                    "type": "string"
+                },
+                "clientSecret": {
+                    "type": "string"
+                },
+                "config": {
+                    "type": "object",
+                    "properties": {
+                        "endsessionUrl": {
+                            "type": "string"
+                        },
+                        "issuer": {
+                            "type": "string"
+                        },
+                        "nameKey": {
+                            "type": "string"
+                        },
+                        "redirectUri": {
+                            "type": "string"
+                        },
+                        "rolesName": {
+                            "type": "string"
+                        },
+                        "scopes": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "enabled": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "schemas": {
+            "type": "object",
+            "properties": {
+                "config": {
+                    "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "ux": {
+            "type": "object",
+            "properties": {
+                "config": {
+                    "type": "object"
+                },
+                "preset": {
+                    "type": "string",
+                    "enum": ["custom", "default"]
+                }
+            }
+        }
+    }
+}

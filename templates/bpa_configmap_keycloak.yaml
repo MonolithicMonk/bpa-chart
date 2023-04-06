@@ -1,0 +1,39 @@
+{{- if (.Values.keycloak.enabled) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "bpa.fullname" . }}-keycloak
+  labels:
+    {{- include "bpa.labels" . | nindent 4 }}
+data:
+  BPA_KEYCLOAK_CLIENT_ID: {{ .Values.keycloak.clientId | quote }}
+  BPA_KEYCLOAK_ROLES_NAME: {{ .Values.keycloak.config.rolesName | quote }}
+  BPA_KEYCLOAK_NAME_KEY: {{ .Values.keycloak.config.nameKey | quote }}
+  BPA_KEYCLOAK_REDIRECT_URI: {{ .Values.keycloak.config.bpaRedirectUrl | quote }}
+  BPA_KEYCLOAK_SCOPES: {{ .Values.keycloak.config.scopes | quote }}
+  BPA_KEYCLOAK_ISSUER: {{ .Values.keycloak.config.issuer | quote }}
+  BPA_KEYCLOAK_ENDSESSION_URL: {{ .Values.keycloak.config.endsessionUrl | quote }}
+  BPA_REDIRECT_URL: {{ .Values.keycloak.config.redirectUri | quote }}
+  BPA_AUTHENTICATION_TYPE: {{ .Values.keycloak.config.bpaAuthenticationType | quote }}
+  BPA_KEYCLOAK_AUTH_METHOD: {{ .Values.keycloak.config.bpaKeycloakAuthMethod | quote }}
+  BPA_KEYCLOAK_AUTHORIZATION_URL: {{ .Values.keycloak.config.bpaKeycloakAuthorizationUrl | quote }}
+  BPA_KEYCLOAK_CONFIG_PATH: {{ .Values.keycloak.config.bpaKeycloakConfigPath | quote }}
+  BPA_KEYCLOAK_COOKIE_DOMAIN: {{ .Values.keycloak.config.bpaKeycloakCookieDomain | quote }}
+  BPA_KEYCLOAK_COOKIE_ENABLED: {{ .Values.keycloak.config.bpaKeycloakCookieEnabled | quote }}
+  BPA_KEYCLOAK_COOKIE_HTTP_ONLY: {{ .Values.keycloak.config.bpaKeycloakCookieHttpOnly | quote }}
+  BPA_KEYCLOAK_COOKIE_MAX_AGE: {{ .Values.keycloak.config.bpaKeycloakCookieMaxAge | quote }}
+  BPA_KEYCLOAK_COOKIE_NAME: {{ .Values.keycloak.config.bpaKeycloakCookieName | quote }}
+  BPA_KEYCLOAK_COOKIE_SAME_SITE: {{ .Values.keycloak.config.bpaKeycloakCookieSameSite | quote }}
+  BPA_KEYCLOAK_COOKIE_SECURE: {{ .Values.keycloak.config.bpaKeycloakCookieSecure | quote }}
+  BPA_KEYCLOAK_ENDSESSION_REDIRECT_URI: {{ .Values.keycloak.config.bpaKeycloakEndsessionRedirectUri | quote }}
+  BPA_KEYCLOAK_GRANT_TYPE: {{ .Values.keycloak.config.bpaKeycloakGrantType | quote }}
+  BPA_KEYCLOAK_JWKS_URI: {{ .Values.keycloak.config.bpaKeycloakJwksUri | quote }}
+  BPA_KEYCLOAK_OPENID_RESPONSE_MODE: {{ .Values.keycloak.config.bpaKeycloakOpenidResponseMode | quote }}
+  BPA_KEYCLOAK_OPENID_RESPONSE_TYPE: {{ .Values.keycloak.config.bpaKeycloakOpenidResponseType | quote }}
+  BPA_KEYCLOAK_REDIRECT_UNAUTHORIZED: {{ .Values.keycloak.config.bpaKeycloakRedirectUnauthorized | quote }}
+  BPA_KEYCLOAK_ROLES_SEPARATOR: {{ .Values.keycloak.config.bpaKeycloakRolesSeparator | quote }}
+  BPA_KEYCLOAK_TOKEN_URL: {{ .Values.keycloak.config.bpaKeycloakTokenUrl | quote }}
+  BPA_KEYCLOAK_USER_INFO: {{ .Values.keycloak.config.bpaKeycloakUserInfo | quote }}
+  BPA_KEYCLOAK_VCAUTHN_PRES_REQ_CONF_ID: {{ .Values.keycloak.config.bpaKeycloakVcauthnPresReqConfId | quote }}
+
+{{- end -}}

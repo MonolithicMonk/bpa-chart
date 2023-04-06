@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Title: Helm chart value.yaml Updater
+# Description: This script encodes a private key file in base64 and updates the corresponding key in the Helm chart value.yaml file.
+
+usage() {
+  echo "Usage: $0 [OPTIONS] <filename> <key>"
+  echo "  -h, --help          Print this help and exit"
+  echo ""
+  echo "  filename            The path to the private key file"
+  echo "  key                 The key in the value.yaml file to update"
+  echo ""
+}
+
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+  usage
+  exit 0
+fi
+
+# Check that a filename has been provided
+if [ -z "$1" ]
+  then
+    echo "Error: No filename provided."
+    exit 1
+fi
+
+# Check that a key number or name has been provided
+if [ -z "$2" ]
+  then
+    echo "Error: No key provided."
+    exit 1
+fi
+
+# Check that the file exists
+if [ ! -f "$1" ]
+  then
+    echo "Error: File not found."
+    exit 1
+fi
+
+# Base64 encode the private key file and save the output to a variable
+base64_encoded_key="$(base64 -w 0 $1)"
+
+echo "Encoded the private key file: $base64_encoded_key"
+
+# Use sed to update the key in the values.yaml file
+sed -i.bak -e "/^diode:/,/$2:/{/^\([[:space:]]*$2: \).*/s//\1$base64_encoded_key/}" values.yaml
+
+
+
+echo "Private key has been encoded in base64 and saved to values.yaml"
