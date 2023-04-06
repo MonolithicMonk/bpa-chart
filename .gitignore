@@ -1,1 +1,4 @@
 CONSUL
+./keys
+logs
+override.yaml
