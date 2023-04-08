@@ -310,13 +310,13 @@ acapy:
     tag: py36-1.16-1_0.7.4
 
 
-  # -- Used for backwards compatibility
-  postgresql:
-    # -- Can be used to overwrite 'postgresql.postgresqlDatabase', if set acapy and bpa backends use separate databases
-    database: ""
-  
   endPointUrl: ""
 
+  inbound: 
+    module: 
+    host: 
+    port: 
+  
   admin:
     enabled: 
     # Specify the host and port on which to run the
@@ -403,7 +403,7 @@ acapy:
     autoStoreCredential: true
     autoVerifyPresentation: false
     autoPingConnection: true
-    autoProvision: true
+    autoProvision: false
     autoDiscloseFeatures: true
     notifyRevocation: true
     monitorRevocationNotification: true
