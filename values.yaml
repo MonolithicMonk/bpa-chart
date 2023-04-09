@@ -226,6 +226,7 @@ keycloak:
     bpaKeycloakJwksUri:
     bpaKeycloakOpenidResponseMode:
     bpaKeycloakOpenidResponseType:
+    bpaKeycloakRedirectionEnabled: 
     bpaKeycloakRedirectUnauthorized:
     bpaKeycloakRolesSeparator:
     bpaKeycloakTokenUrl:

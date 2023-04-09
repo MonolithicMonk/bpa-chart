@@ -137,34 +137,36 @@ If Keycloak is enabled, add the client id and secret from the keycloak secret to
 {{- end -}}
 
 {{/*
-If Keycloak is enabled, mount the keycloak config map as env vars
-We don't need envFrom because we always load application configmap...
+If Consul Discovery is enabled, mount the consul config map as env vars
 */}}
-{{- define "bpa.keycloak.configmap.env.vars" -}}
-{{- if (.Values.keycloak.enabled) -}}
-- configMapRef:
-    name: {{ template "bpa.fullname" . }}-keycloak
+{{- define "bpa.consul.configmap.env.vars" -}}
+{{- if (.Values.consul.enabled) -}}
+envFrom:
+  - configMapRef:
+      name: {{ template "bpa.fullname" . }}-consul
 {{- end -}}
 {{- end -}}
 
 {{/*
-If Consul Discovery is enabled, mount the consul config map as env vars
-We don't need envFrom because we always load application configmap...
+If Keycloak is enabled, mount the keycloak config map as env vars
 */}}
-{{- define "bpa.consul.configmap.env.vars" -}}
-{{- if (.Values.consul.enabled) -}}
-- configMapRef:
-    name: {{ template "bpa.fullname" . }}-consul
+{{- define "bpa.keycloak.configmap.env.vars" -}}
+{{- if (.Values.keycloak.enabled) -}}
+envFrom:
+  - configMapRef:
+      name: {{ template "bpa.fullname" . }}-keycloak
 {{- end -}}
 {{- end -}}
+
 
 {{/*
 If Micronaut is enabled, mount the keycloak config map as env vars
 We don't need envFrom because we always load application configmap...
 */}}
 {{- define "bpa.micronaut.configmap.env.vars" -}}
-- configMapRef:
-    name: {{ template "bpa.fullname" . }}-micronaut
+envFrom:
+  - configMapRef:
+      name: {{ template "bpa.fullname" . }}-micronaut
 {{- end -}}
 
 {{/*

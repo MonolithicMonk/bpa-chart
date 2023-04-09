@@ -30,10 +30,12 @@ data:
   BPA_KEYCLOAK_JWKS_URI: {{ .Values.keycloak.config.bpaKeycloakJwksUri | quote }}
   BPA_KEYCLOAK_OPENID_RESPONSE_MODE: {{ .Values.keycloak.config.bpaKeycloakOpenidResponseMode | quote }}
   BPA_KEYCLOAK_OPENID_RESPONSE_TYPE: {{ .Values.keycloak.config.bpaKeycloakOpenidResponseType | quote }}
+  SEC_REDIRECTION: {{ .Values.keycloak.config.bpaKeycloakRedirectionEnabled | quote }}
   BPA_KEYCLOAK_REDIRECT_UNAUTHORIZED: {{ .Values.keycloak.config.bpaKeycloakRedirectUnauthorized | quote }}
   BPA_KEYCLOAK_ROLES_SEPARATOR: {{ .Values.keycloak.config.bpaKeycloakRolesSeparator | quote }}
   BPA_KEYCLOAK_TOKEN_URL: {{ .Values.keycloak.config.bpaKeycloakTokenUrl | quote }}
   BPA_KEYCLOAK_USER_INFO: {{ .Values.keycloak.config.bpaKeycloakUserInfo | quote }}
   BPA_KEYCLOAK_VCAUTHN_PRES_REQ_CONF_ID: {{ .Values.keycloak.config.bpaKeycloakVcauthnPresReqConfId | quote }}
+  BPA_KEYCLOAK_SECURITY_ENABLED: {{ .Values.keycloak.enabled | quote }}
 
 {{- end -}}

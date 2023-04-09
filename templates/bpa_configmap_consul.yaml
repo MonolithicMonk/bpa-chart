@@ -1,4 +1,4 @@
-{{- if (.Values.keycloak.enabled) -}}
+{{- if (.Values.consul.enabled) -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
