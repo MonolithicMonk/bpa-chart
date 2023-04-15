@@ -26,6 +26,7 @@ data:
   BPA_KEYCLOAK_COOKIE_SAME_SITE: {{ .Values.keycloak.config.bpaKeycloakCookieSameSite | quote }}
   BPA_KEYCLOAK_COOKIE_SECURE: {{ .Values.keycloak.config.bpaKeycloakCookieSecure | quote }}
   BPA_KEYCLOAK_ENDSESSION_REDIRECT_URI: {{ .Values.keycloak.config.bpaKeycloakEndsessionRedirectUri | quote }}
+  BPA_KEYCLOAK_LOGOUT_REDIRECT: {{ .Values.keycloak.config.bpaKeycloakLogoutRedirect | quote }}
   BPA_KEYCLOAK_GRANT_TYPE: {{ .Values.keycloak.config.bpaKeycloakGrantType | quote }}
   BPA_KEYCLOAK_JWKS_URI: {{ .Values.keycloak.config.bpaKeycloakJwksUri | quote }}
   BPA_KEYCLOAK_OPENID_RESPONSE_MODE: {{ .Values.keycloak.config.bpaKeycloakOpenidResponseMode | quote }}
@@ -37,5 +38,11 @@ data:
   BPA_KEYCLOAK_USER_INFO: {{ .Values.keycloak.config.bpaKeycloakUserInfo | quote }}
   BPA_KEYCLOAK_VCAUTHN_PRES_REQ_CONF_ID: {{ .Values.keycloak.config.bpaKeycloakVcauthnPresReqConfId | quote }}
   BPA_KEYCLOAK_SECURITY_ENABLED: {{ .Values.keycloak.enabled | quote }}
+
+  BPA_KEYCLOAK_OPENID_LOGOUT_URI: {{ .Values.keycloak.config.bpaKeycloakOpenidLogoutUri | quote }}
+  BPA_KEYCLOAK_OPENID_ENDSESSION_ENABLED: {{ .Values.keycloak.config.bpaKeycloakOpenidEndsessionEnabled | quote }}
+  BPA_KEYCLOAK_OPENID_ADDITIONAL_CLAIMS_ACCESS: {{ .Values.keycloak.config.bpaKeycloakOpenidAdditionalClaimsAccess | quote }}
+  BPA_KEYCLOAK_OPENID_ADDITIONAL_CLAIMS_REFRESH: {{ .Values.keycloak.config.bpaKeycloakOpenidAdditionalClaimsRefresh | quote }}
+  VUE_APP_LOGOUT_URL_PATH: {{ .Values.keycloak.config.vueAppLogoutUrlPath | quote }}
 
 {{- end -}}

@@ -2,3 +2,5 @@ CONSUL
 keys/
 logs
 override.yaml
+diode.yaml
+ux.yaml

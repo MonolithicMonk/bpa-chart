@@ -221,7 +221,9 @@ keycloak:
     bpaKeycloakCookieName:
     bpaKeycloakCookieSameSite:
     bpaKeycloakCookieSecure:
+    # bpaKeycloakEndsessionRedirectUri default: /logout
     bpaKeycloakEndsessionRedirectUri:
+    bpaKeycloakLogoutRedirect: 
     bpaKeycloakGrantType:
     bpaKeycloakJwksUri:
     bpaKeycloakOpenidResponseMode:
@@ -232,6 +234,16 @@ keycloak:
     bpaKeycloakTokenUrl:
     bpaKeycloakUserInfo:
     bpaKeycloakVcauthnPresReqConfId:
+    # bpaKeycloakOpenidLogoutUri default: /oauth/logout
+    bpaKeycloakOpenidLogoutUri: /oauth/logout
+    # bpaKeycloakOpenidEndsessionEnabled default: true
+    bpaKeycloakOpenidEndsessionEnabled: true
+    # bpaKeycloakOpenidAdditionalClaimsAccess default: true
+    bpaKeycloakOpenidAdditionalClaimsAccess: true
+    # bpaKeycloakOpenidAdditionalClaimsRefresh default: false
+    bpaKeycloakOpenidAdditionalClaimsRefresh: false
+    # vueAppLogoutUrlPath default: oauth/logout
+    vueAppLogoutUrlPath: oauth/logout
 
 schemas:
   enabled: true
